@@ -1,3 +1,6 @@
 
 # ignore node_modules dependency folder when upload to github
 node_modules/
+
+#ignore env file 
+.env

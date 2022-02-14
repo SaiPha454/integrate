@@ -1,7 +1,9 @@
+//config the env variables
+require('dotenv').config()
 
 const app = require('./routes/index');
 
-let port = 4200;
+let port = process.env.port;
 
 
 app.listen(port , ()=>{
