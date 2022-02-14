@@ -1,6 +1,8 @@
 
+
 const Redis = require('ioredis');
 const fs = require('fs');
+
 
 // create new redis client connection
 const redis = new Redis({
@@ -24,8 +26,8 @@ const redis = new Redis({
         key: fs.readFileSync('./certs/redis/server.key'),
         rejectUnauthorized: false
     },
-    username:"admin",
-    password:'jarvismark42'
+    username: process.env.redis_username,
+    password: process.env.redis_password
 });
 
 

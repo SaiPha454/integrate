@@ -1,7 +1,8 @@
 
 const {MongoClient} = require('mongodb')
 
-const uri= "mongodb://app:app@127.0.0.1:28017,localhost:28018,localhost:28019?tls=true";
+
+const uri= `mongodb://${process.env.mongo_username}:${process.env.mongo_password}@127.0.0.1:28017,localhost:28018,localhost:28019?tls=true`;
 
 const client = new MongoClient(uri,{
     tlsCAFile: 'D:/Learn Nodjs/Integrate/src/src/daos/imple/clients/certs/mongo/ca-chain-bundle.cert.pem',
