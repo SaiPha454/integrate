@@ -31,7 +31,7 @@
      
      ```json
         {
-            status: 401,
+            status: 400,
             message: "unable to create album"
         }
      ```
@@ -42,7 +42,7 @@
 + ### Method - PUT
 + ### Params
   - id - album id (required)
-  - artist-id - atist id (required)
+  - artist_id - atist id (required)
   - name - new album name (required)
 
 + ### Return
@@ -68,7 +68,7 @@
      
      ```json
         {
-            status: 401,
+            status: 400,
             message: "unable to update album"
         }
      ```
@@ -79,7 +79,7 @@
 + ### Method - Delete
 + ### Params
   - id - album id (required)
-  - artist-id - atist id (required)
+  - artist_id - atist id (required)
 
 + ### Return
     <br/>
@@ -87,7 +87,10 @@
     ``` json
     {
         status: 200,
-        message: "album deleted successfully"
+        message: "album deleted successfully",
+        meta:{
+            _id: 123 // deleted album id
+        }
     }
     ```
 + ### Error
@@ -95,7 +98,7 @@
      
      ```json
         {
-            status: 401,
+            status: 400,
             message: "unable to delete album"
         }
      ```
@@ -105,7 +108,7 @@
   - get the list of albums of an artist
 + ### Method - Post
 + ### Params
-  - artist-id - atist id (required)
+  - artist_id - artist id (required)
 
 + ### Return
     <br/>
@@ -118,8 +121,7 @@
             artist_id: 123456,
             total: 10
         },
-        data: {
-            albums: [
+        data: [
                 {
                     id : 1287945,
                     name: "album name",
@@ -127,7 +129,7 @@
                 },
                 ...
             ]
-        }
+        
     }
     ```
 + ### Error
@@ -135,7 +137,7 @@
      
      ```json
         {
-            status: 401,
+            status: 400,
             message: "unable to load albums"
         }
      ```
@@ -146,7 +148,7 @@
 + ### Method - Post
 + ### Params
   - id - album id (required)
-  - artist-id - atist id (required)
+  - artist_id - atist id (required)
 
 + ### Return
     <br/>
@@ -186,7 +188,7 @@
      
      ```json
         {
-            status: 401,
+            status: 400,
             message: "unable to load album's songs"
         }
      ```
