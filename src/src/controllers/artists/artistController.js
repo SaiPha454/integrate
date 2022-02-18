@@ -3,10 +3,10 @@ const mongoClient = require('../../daos/imple/clients/mongodb_client');
 const { commonResponse, commonErrorResponse } = require('../commonController/commonController');
 
 /*
-  create artists collection on Moongodb server if not exists and return the conneciton
+  create collections on Moongodb server if not exists and return the conneciton
 */
-let artistCollection = mongoClient.db('integrate').collection('artists');
-
+const artistCollection = mongoClient.db('integrate').collection('artists');
+const songCollection = mongoClient.db('integrate').collection('songs'); 
 
 /** Create an album of the specified artist
 @param {string} name - album name (req)
@@ -148,10 +148,143 @@ const getListOfAlbums=async (req,res)=>{
 
 }
 
+/**
+ * Upload a song to the artist studio
+ * @param {string} title - song name
+ * @param {string} mp3_file - mp3 file path
+ * @param {ObjectId} artist_id - artist id 
+ * @param {ObjectId} album_id - album id which will be uploaded to (option). If not specified, default `studio` album will be used instead
+ * 
+ * @returns
+ */
+const uploadSong= async (req,res)=>{
+
+    let req_body= req.body;
+
+    let title= req_body.title;
+    let artist_id= mongodb.ObjectId(req_body.artist_id);
+    let mp3_file= req_body.mp3_file;
+
+    let artist_name;
+    let album_id;
+    let album_name;
+
+    let artist = await artistCollection.findOne({'_id':artist_id});
+    if(artist == null){
+        return res.send(commonErrorResponse(400,'The specified artist does not exist'));
+    }
+
+    artist_name= artist.name;
+
+    if(req_body.album_id){
+        album_id= mongodb.ObjectId(req_body.album_id);
+
+        artist.albums.map(element=>{
+            if(element._id.toString() === album_id.toString()){
+                album_name= element.name;
+            }
+        })
+
+    }else{
+        album_id= 'studio';
+        album_name='studio';
+    }
+
+    //song need to be uploaded to both `songs` collection and `artists` collection
+    let session = mongoClient.startSession();
+
+    const transactionOptions= {
+        readPreference: 'primary',
+        readConcern: { level: 'local' },
+        writeConcern: { w: 'majority' }
+    }
+
+    let response_data;
+    let response_meta;
+
+    try{
+        await session.withTransaction(async ()=>{
+            let released_date= new Date().toJSON().split('T')[0];
+            released_date=  released_date.split('-').reverse().join('-');
+
+            let data={
+                title,
+                mp3_file,
+                artist:{
+                    '_id':artist_id,
+                    'name':artist_name
+                },
+                album:{
+                    '_id':album_id,
+                    'name':album_name
+                },
+                released_date:released_date
+            }
+
+            const songs_col=await songCollection.insertOne(data,{session});
+
+            data._id=songs_col.insertedId;
+
+            let identifier={
+                '_id': artist_id,
+                'albums._id':album_id
+            };
+            let operator={
+                '$push':{
+                    'recent_released_songs':{
+                        '$each':[data],
+                        '$sort':{'_id':-1},
+                        '$slice':2
+                    }
+                },
+                '$inc':{'albums.$.num_song':1}
+            }
+            const artist_col=await artistCollection.updateOne(identifier,operator,{session});
+
+            response_meta={
+                song_id: data._id,
+                album_id,
+                artist_id
+            }
+            response_data=data;
+
+        } , transactionOptions)
+    }
+    catch(error){
+        if(error){
+            return res.send(commonErrorResponse(400,'Fail to upload song'));
+        }
+    }
+    finally{
+        await session.endSession();
+    }
+
+
+    return res.send(commonResponse(200,'Uploaded song successfully',response_meta,response_data));
+
+}
+
+
+const updateSong= async (req,res)=>{
+
+}
+
+const deleteSong = async (req,res)=>{
+
+}
+
+const getListOfSongs= async (req,res)=>{
+
+}
+
 
 module.exports={
     createAlbum,
     updateAlbum,
     deleteAlbum,
-    getListOfAlbums
+    getListOfAlbums,
+    uploadSong,
+    updateSong,
+    deleteSong,
+    getListOfSongs
 }

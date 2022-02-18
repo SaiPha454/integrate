@@ -8,9 +8,7 @@
   - title - song name (required)
   - mp3_file - mp3 file path (required)
   - artist_id - artist id (required)
-  - artist_name - artist name (required)
   - album_id - album id (option , if album is not specified     'studio' album name is used instead)
-  - album_name - album name (option)
   
 
 + ### Return
@@ -61,7 +59,6 @@
   - artist_id - artist id (required)
   - title - song name (option)
   - album_id - album id (option)
-  - album_name - album name (option)
   
 
 + ### Return
