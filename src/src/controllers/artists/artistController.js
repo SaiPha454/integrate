@@ -264,9 +264,144 @@ const uploadSong= async (req,res)=>{
 
 }
 
+/**
+ *Update the song informs (album,title,mp3_file)
+ * @param {ObjectId} id - the song id 
+ * @param {ObjectId} artist_id - artist id
+ * @param {ObjectId} album_id - the current album id (option)
+ * @param {ObjectId} new_album_id - the new album id which will be changed to (option)
+ * @param {string} new_title - the new song title (option)
+ * @param {string} new_mp3_file - the new mp3 file path (option)
+ *  
+ * @returns 
+ */
 
 const updateSong= async (req,res)=>{
 
+    let updateable_data= [{'key':'new_title','val':'title'},{'key':'new_mp3_file','val':'mp3_file'},{'key':'new_album_id','val':'album_id'}];
+
+
+    let req_body= req.body;
+    let artist_id= mongodb.ObjectId(req_body.artist_id);
+    let song_id = mongodb.ObjectId(req_body.id);
+
+    let update_data={};
+    let old_album_num_song=0;
+    let songBelongToAlbum=false;
+    let new_album= null;
+    let isRecentSong= false;
+
+    let artist = await artistCollection.findOne({'_id':artist_id},{projection:{'recent_released_songs':1,'albums':1}});
+    //check if the song is in the artist's recent_released_songs array
+    artist.recent_released_songs.map(song=>{
+        if(song._id.toString() === song_id.toString()){
+            isRecentSong= true;
+        }
+        
+    });
+
+    let song= await songCollection.findOne({'_id':song_id});
+    //map the incoming request with the ediable or updateable data. If request include changing album , the old album num_song must >0.
+    updateable_data.map(element=>{
+        
+        if(req_body[element.key]){
+
+            if(element.key === 'new_album_id' ){
+                
+                //retrive the new album  from the artist and check if the song really belong to the given album
+                artist.albums.map(album=>{
+
+                    if(album._id.toString() === req_body[element.val] ){
+                        old_album_num_song = album.num_song;
+                        if(song.album._id.toString() === req_body[element.val]){
+                            songBelongToAlbum= true;
+                        }
+                    }
+                    if(album._id.toString() === req_body[element.key].toString() ){
+
+                        new_album= album;
+                        
+                    }
+                })
+                
+            }else{
+                update_data[element.val]= req_body[element.key];
+            }
+
+        }
+    })
+
+    //set the update operator which is `update_data`
+    if(old_album_num_song > 0 && songBelongToAlbum && new_album != null){
+
+        update_data.album={};
+        update_data.album=new_album;
+    }
+    
+    //start transaction session
+    const session= mongoClient.startSession();
+
+    let sessionOptions= {
+        writeConcern:'majority'
+    }
+
+    try{
+        await session.withTransaction(async ()=>{
+
+            let songColIdentifier={
+                '_id':song_id
+            }
+            let songColOperator={
+                '$set':update_data
+            }
+
+            let songs_col=await songCollection.updateOne(songColIdentifier,songColOperator,{session});
+            
+            let identifier={'_id':artist_id};
+            let operator={};
+
+            if(isRecentSong){
+                
+                identifier['recent_released_songs._id']= song_id;
+                let recent_update_data={};
+                Object.keys(update_data).map(key=>{
+                    
+                    let recent_key=`recent_released_songs.$.${key}`;
+                    recent_update_data[recent_key]=update_data[key];
+                })
+
+                operator[`$set`]= recent_update_data;
+                
+            }
+
+            //hangling the inc and desc of the new album and old album only if the old_album_num_song > 0
+            let arrayFilters=null;
+            if(req_body.new_album_id && req_body.album_id && old_album_num_song >0){
+                operator['$inc']={'albums.$[newalbum].num_song':1,'albums.$[oldalbum].num_song':-1};
+                let newalbum_id= update_data.album._id === "studio" ? "studio" : mongodb.ObjectId(update_data.album._id);
+                let oldalbum_id= req_body.album_id === "studio" ? "studio" : mongodb.ObjectId(req_body.album_id);
+                arrayFilters=[ {'newalbum._id':newalbum_id} , {'oldalbum._id':oldalbum_id} ];
+            }
+            
+            if(JSON.stringify(operator) != '{}' ){
+                let artist_col=await artistCollection.updateOne(identifier,operator,{session,arrayFilters});
+            }
+            
+            
+
+        },sessionOptions)
+    }
+    catch(error){
+        return res.send(commonErrorResponse(400,'Update Song fail.'));
+    }
+    finally{
+       await session.endSession();
+    }
+
+    let meta={  id: song_id }
+    let data= await songCollection.findOne({'_id':song_id});
+    
+    return res.send(commonResponse(200,'Updated successfully',meta,data));
 }
 
 const deleteSong = async (req,res)=>{

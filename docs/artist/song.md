@@ -52,13 +52,15 @@
 
 ## Route - /artists/songs/update
 + ### Description
-  - update a song informations such as title, album.
+  - update a song informations such as title, album and mp3_file.
 + ### Method - Put
 + ### Params
   - id - song id (required)
   - artist_id - artist id (required)
-  - title - song name (option)
-  - album_id - album id (option)
+  - album_id - album id (required)
+  - new_title - new song name  (option)
+  - new_album_id - new album id (option)
+  - new_mp3_file - new mp3 file path (option)
   
 
 + ### Return
@@ -69,9 +71,7 @@
         status: 200,
         message: "song updated successfully",
         meta:{
-            song_id: 12
-            album_id: 123,
-            artist_id: 123456
+            id:12
         },
         data: {
             _id:    ObjectID(),
