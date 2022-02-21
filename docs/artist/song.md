@@ -150,8 +150,7 @@
             total: 25,
             artist_id: 123456
         },
-        data: {
-            songs:[
+        data: [
                 {
                     _id:    ObjectID(),
                     title:    "song title",
@@ -169,7 +168,7 @@
                 },
                 ...
             ]
-        }
+        
     }
     ```
 + ### Error
