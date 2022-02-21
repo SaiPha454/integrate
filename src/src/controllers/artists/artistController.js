@@ -404,12 +404,98 @@ const updateSong= async (req,res)=>{
     return res.send(commonResponse(200,'Updated successfully',meta,data));
 }
 
+
+/**
+ * Delete a song from the artist studio
+ * @param {ObjectId} id- song id
+ * @param {ObjectId} artist_id - artist id
+ * @param {ObjectId} album_id - album id
+ * 
+ * @returns
+ */
 const deleteSong = async (req,res)=>{
 
+    let req_body= req.body;
+    let id= mongodb.ObjectId(req_body.id);
+    let artist_id= mongodb.ObjectId(req_body.artist_id);
+    let album_id= req_body.album_id == 'studio' ? 'studio' : mongodb.ObjectId(req_body.album_id);
+
+    let song= await songCollection.findOne({'_id':id});
+    //check it the song exists and is the given album correct
+    if(!song || song.album._id.toString() != album_id){
+        return res.send(commonErrorResponse(400,'The specified song does not exist'));
+    }
+
+    
+    let session= mongoClient.startSession();
+
+    try{
+        await session.withTransaction(async ()=>{
+
+            let artist= await artistCollection.findOne({'_id':artist_id});
+            let isRecentSong= false;
+
+            artist.recent_released_songs.map(element=>{
+                if(element._id.toString() === id.toString()){
+                    isRecentSong=true;
+                }
+            });
+
+            let artist_col_identifer={
+                '_id':artist_id
+            }
+            let artist_col_operator={
+                '$inc':{ 'albums.$[album].num_song':-1 }
+            }
+            let artist_col_arrayFilter=[{'album._id': album_id }];
+
+            if(isRecentSong){
+                artist_col_operator['$pull']={ 'recent_released_songs':{'_id':id} }
+            }
+
+            let artist_col= await artistCollection.updateOne(artist_col_identifer,artist_col_operator,{arrayFilters:artist_col_arrayFilter});
+            let songs_col=await songCollection.deleteOne({'_id':id});
+
+
+        })
+    }
+    catch(error){
+        if(error){
+            return res.send(commonErrorResponse(400,'Deleting song fails'))
+        }
+    }
+    finally{
+        session.endSession();
+    }
+
+    let meta={
+        id: id
+    }
+    
+    return res.send(commonResponse(200,'Deleted song successfully',meta));
 }
 
+
+/**
+ * 
+ * @param {ObjectId} id - artist id
+ * 
+ * @returns
+ */
 const getListOfSongs= async (req,res)=>{
 
+    let artist_id = mongodb.ObjectId(req.body.id);
+
+    let artist_songs= await songCollection.find({'artist._id':artist_id});
+    artist_songs= await artist_songs.toArray();
+
+    let meta={
+        total: artist_songs.length,
+        artist_id: artist_id
+    }
+    
+
+    return res.send(commonResponse(200,'Loaded artist songs successfully',meta,artist_songs));
 }
 
 

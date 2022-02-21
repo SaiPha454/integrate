@@ -118,9 +118,7 @@
         status: 200,
         message: "song deleted successfully",
         meta:{
-            song_id: 12
-            album_id: 123,
-            artist_id: 123456
+            id:12 //song id
         }
     }
     ```
@@ -152,8 +150,7 @@
             total: 25,
             artist_id: 123456
         },
-        data: {
-            songs:[
+        data: [
                 {
                     _id:    ObjectID(),
                     title:    "song title",
@@ -171,7 +168,7 @@
                 },
                 ...
             ]
-        }
+        
     }
     ```
 + ### Error
