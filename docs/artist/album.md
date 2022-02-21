@@ -159,10 +159,10 @@
         message: "album's songs loaded successfully",
         meta:{
             album_id: 123,
-            artist_id: 123456
+            artist_id: 123456,
+            total: 10
         },
-        data: {
-            songs: [
+        data: [
                 {
                     _id:    ObjectID(),
                     title:    "song title",
@@ -180,7 +180,7 @@
                 },
                 ...
             ]
-        }
+        
     }
     ```
 + ### Error

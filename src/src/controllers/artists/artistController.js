@@ -148,6 +148,31 @@ const getListOfAlbums=async (req,res)=>{
 
 }
 
+
+/**
+ * Get the list of songs of the specified album
+ * @param {ObjectId} id - album id 
+ * @param {ObjectId} artist_id - artist id
+ * 
+ * @returns
+ */
+const getSongsofAlbum= async (req,res)=>{
+
+    let album_id= req.body.id == 'studio' ? 'studio' : mongodb.ObjectId(req.body.id);
+    let artist_id= mongodb.ObjectId(req.body.artist_id);
+
+    let songs= await songCollection.find({'album._id':album_id,'artist._id':artist_id});
+    songs= await songs.toArray();
+
+    let meta={
+        album_id: album_id,
+        artist_id: artist_id,
+        total: songs.length
+    }
+    
+    return res.send(commonResponse(200,'Loaded songs successfully',meta,songs))
+}
+
 /**
  * Upload a song to the artist studio
  * @param {string} title - song name
@@ -504,6 +529,7 @@ module.exports={
     updateAlbum,
     deleteAlbum,
     getListOfAlbums,
+    getSongsofAlbum,
     uploadSong,
     updateSong,
     deleteSong,
