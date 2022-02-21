@@ -475,8 +475,27 @@ const deleteSong = async (req,res)=>{
     return res.send(commonResponse(200,'Deleted song successfully',meta));
 }
 
+
+/**
+ * 
+ * @param {ObjectId} id - artist id
+ * 
+ * @returns
+ */
 const getListOfSongs= async (req,res)=>{
 
+    let artist_id = mongodb.ObjectId(req.body.id);
+
+    let artist_songs= await songCollection.find({'artist._id':artist_id});
+    artist_songs= await artist_songs.toArray();
+
+    let meta={
+        total: artist_songs.length,
+        artist_id: artist_id
+    }
+    
+
+    return res.send(commonResponse(200,'Loaded artist songs successfully',meta,artist_songs));
 }
 
 
