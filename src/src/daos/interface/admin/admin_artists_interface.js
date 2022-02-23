@@ -7,9 +7,11 @@ const findById= async (id)=> adminImple.findById(id)
 
 const activate= async (id)=> adminImple.activate(id)
 
+const burn = async (id)=> adminImple.burn(id)
 
 module.exports={
     insert,
     findById,
-    activate
+    activate,
+    burn
 }

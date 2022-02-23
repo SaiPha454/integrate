@@ -59,8 +59,32 @@ const activate= async (id)=>{
     return await artistListCollection.updateOne(identifier,operator);
 }
 
+/**
+ * Burn the artist account
+ * @param {ObjectId} id - artist id
+ * 
+ * @returns 
+ */
+const burn = async (id)=>{
+
+    let artist_id = mongodb.ObjectId(id);
+
+    let identifier= {
+        '_id':artist_id
+    }
+    let operator={
+        '$set':{
+            'status':'burn'
+        }
+    }
+
+    return await artistListCollection.updateOne(identifier,operator);
+}
+
+
 module.exports={
     insert,
     findById,
-    activate
+    activate,
+    burn
 }
