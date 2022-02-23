@@ -123,8 +123,7 @@
         meta:{
             total: 10000
         },
-        data:{
-            artists:[
+        data:[
                 {
                     _id:  123456,
                     artist_name: "artist name",
@@ -139,7 +138,7 @@
                 },
                 ...
             ]
-        }
+        
     }
     ```
 + ### Error

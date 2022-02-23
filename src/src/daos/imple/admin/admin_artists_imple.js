@@ -81,10 +81,21 @@ const burn = async (id)=>{
     return await artistListCollection.updateOne(identifier,operator);
 }
 
+/**
+ * Get the list of all artists
+ * 
+ * @returns
+ */
+const findAll=async ()=>{
+
+    return await artistListCollection.find({},{projection:{'password':0}});
+
+}
 
 module.exports={
     insert,
     findById,
     activate,
-    burn
+    burn,
+    findAll
 }
