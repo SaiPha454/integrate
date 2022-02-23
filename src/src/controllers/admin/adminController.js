@@ -1,6 +1,6 @@
 const {commonErrorResponse, commonResponse}= require('../commonController/commonController');
 
-const { insert, findById, activate, burn } = require("../../daos/interface/admin/admin_artists_interface")
+const { insert, findById, activate, burn, findAll } = require("../../daos/interface/admin/admin_artists_interface")
 
 
 //confirm the artist's account registeration request
@@ -61,8 +61,25 @@ const burnArtistAccount= async (req,res)=>{
 
 }
 
+//get the list of all artists
+const getArtistList= async (req,res)=>{
+    
+    let artists= await findAll();
+
+    artists= await artists.toArray();
+
+    let meta={
+        'total': artists.length
+    }
+
+    return res.send(commonResponse(200,'Loaded successfully',meta,artists));
+    
+}
+
+
 module.exports={
     register,
     activateArtistAccount,
-    burnArtistAccount
+    burnArtistAccount,
+    getArtistList
 }
