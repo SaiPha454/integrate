@@ -1,5 +1,8 @@
 const mongoClient = require('../clients/mongodb_client');
 const mongodb = require('mongodb');
+const redisClient = require('../clients/redis_client');
+
+const redisKeys = require('../redis-keys/redis-keys-gen')
 
 const userCollection = mongoClient.db('integrate').collection('users');
 const songCollection = mongoClient.db('integrate').collection('songs');
@@ -55,7 +58,22 @@ const findById= async (id)=>{
     return await songCollection.findOne({'_id':id});
 }
 
+/**
+ * Give like reaction to a song
+ * @param {ObjectId} id - song id
+ * @param {ObjectId} user_id - user id
+ * 
+ * @returns
+ */
+const like = async (id,user_id)=>{
+
+    let redis_key = redisKeys.redis_like_key(id);
+    
+    return await redisClient.sadd(redis_key,user_id);
+}
+
 module.exports={
     addToFav,
-    findById
+    findById,
+    like
 }

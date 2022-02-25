@@ -41,6 +41,28 @@ const addToFav= async (req,res)=>{
     
 }
 
+/**
+ * Give like reaction to a song
+ * @param {ObjectId} id - song id
+ * @param {ObjectId} user_id - user id
+ * 
+ * @returns
+ */
+const likeSong= async (req,res)=>{
+
+    let id = req.body.id;
+    let user_id= req.body.user_id;
+
+    let like = await user_interface.like(id, user_id);
+
+    if(like == 0){
+        return res.send(commonResponse(200,'Already liked the song'));
+    }
+
+    return res.send(commonResponse(200,'Like successfully'));
+}
+
 module.exports={
-    addToFav
+    addToFav,
+    likeSong
 }
