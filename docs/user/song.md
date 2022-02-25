@@ -1,13 +1,13 @@
 # Song endpoints (user)
 
-## Route - /song/add-to-fav
+## Route - /users/song/add-to-fav
 + ### Description
   - add a song to my favourite playlist
 + ### Method - Post
 + ### Params
   - id - song id (required)
   - user_id - user id (required)
-  - playlist_id - playlist id (required, "fav" is defualt)
+  - playlist_id - playlist id (option, "fav" is defualt)
   
 
 + ### Return
@@ -18,9 +18,7 @@
         status: 200,
         message: "added to playlist successfully",
         meta:{
-          id: ObjectID(),
-          playlist_id: ObjectID(),
-          playlist_name: "playlist name"
+          id: ObjectID()
         },
         data:{
             
