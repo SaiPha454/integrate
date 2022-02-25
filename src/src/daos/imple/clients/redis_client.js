@@ -3,6 +3,8 @@
 const Redis = require('ioredis');
 const fs = require('fs');
 
+//get the current folder address path
+let dirname = __dirname .replace("\\","/");
 
 // create new redis client connection
 const redis = new Redis({
@@ -15,15 +17,15 @@ const redis = new Redis({
     name:"masterInstance",
     enableTLSForSentinelMode: true,
     tls:{
-        ca: fs.readFileSync('./certs/redis/ca.crt'),
-        cert:fs.readFileSync('./certs/redis/redis_server_crt_signed_by_ca.crt'),
-        key: fs.readFileSync('./certs/redis/server.key'),
+        ca: fs.readFileSync(dirname + '/certs/redis/ca.crt'),
+        cert:fs.readFileSync(dirname + '/certs/redis/redis_server_crt_signed_by_ca.crt'),
+        key: fs.readFileSync(dirname + '/certs/redis/server.key'),
         rejectUnauthorized: false
     },
     sentinelTLS:{
-        ca: fs.readFileSync('./certs/redis/ca.crt'),
-        cert:fs.readFileSync('./certs/redis/redis_server_crt_signed_by_ca.crt'),
-        key: fs.readFileSync('./certs/redis/server.key'),
+        ca: fs.readFileSync(dirname + '/certs/redis/ca.crt'),
+        cert:fs.readFileSync(dirname + '/certs/redis/redis_server_crt_signed_by_ca.crt'),
+        key: fs.readFileSync(dirname + '/certs/redis/server.key'),
         rejectUnauthorized: false
     },
     username: process.env.redis_username,
