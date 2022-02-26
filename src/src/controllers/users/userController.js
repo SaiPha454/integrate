@@ -62,7 +62,28 @@ const likeSong= async (req,res)=>{
     return res.send(commonResponse(200,'Like successfully'));
 }
 
+/**
+ * Give dislike reaction to a song
+ * @param {ObjectId} id - song id
+ * @param {ObjectId} user_id - user id
+ * 
+ * @returns
+ */
+const dislikeSong= async (req,res)=>{
+
+    let id = req.body.id;
+    let user_id= req.body.user_id;
+
+    let dislike = await user_interface.dislike(id, user_id);
+
+    if(dislike == 0){
+        return res.send(commonResponse(200,'Already disliked the song'));
+    }
+
+    return res.send(commonResponse(200,'Dislike successfully'));
+}
 module.exports={
     addToFav,
-    likeSong
+    likeSong,
+    dislikeSong
 }

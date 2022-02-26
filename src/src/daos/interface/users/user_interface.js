@@ -27,9 +27,19 @@ const findById= async (id)=> userImple.findById(id);
  */
 const like= async (id, user_id)=> userImple.like(id, user_id);
 
+/**
+ * Give dislike reaction to a song
+ * @param {ObjectId} id - song id
+ * @param {ObjectId} user_id - user id
+ * 
+ * @returns
+ */
+ const dislike= async (id, user_id)=> userImple.dislike(id, user_id);
 
+ 
 module.exports={
     addToFav,
     findById,
-    like
+    like,
+    dislike
 }

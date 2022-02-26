@@ -72,8 +72,23 @@ const like = async (id,user_id)=>{
     return await redisClient.sadd(redis_key,user_id);
 }
 
+/**
+ * Give dislike reaction to a song
+ * @param {ObjectId} id - song id
+ * @param {ObjectId} user_id - user id
+ * 
+ * @returns
+ */
+ const dislike = async (id,user_id)=>{
+
+    let redis_key = redisKeys.redis_like_key(id);
+    
+    return await redisClient.srem(redis_key,user_id);
+}
+
 module.exports={
     addToFav,
     findById,
-    like
+    like,
+    dislike
 }
