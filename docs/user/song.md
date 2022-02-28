@@ -283,7 +283,7 @@
         status: 200,
         message: "success",
         meta:{
-          query: "query words"
+          total: 30
         },
         data:{
            artists:[

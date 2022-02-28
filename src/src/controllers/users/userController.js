@@ -121,11 +121,28 @@ const getArtistAlbum= async (req,res)=>{
         return res.send(commonResponse(200,'Loaded successfully',meta,album));
 }
 
+/**
+ * Search for the songs or artists
+ * @param {string} query - the text the user used to search for songs or artists
+ * 
+ * @returns 
+ */
+const search = async (req,res)=>{
+    let searchText= req.query.query;
+    let result = await user_interface.search(searchText);
+
+    let meta={
+        total : result.songs.length + result.artists.length
+    }
+    
+    return res.send(commonResponse(200,'search completed',meta,result));
+}
 
 module.exports={
     addToFav,
     likeSong,
     dislikeSong,
     getArtistStudio,
-    getArtistAlbum
+    getArtistAlbum,
+    search
 }

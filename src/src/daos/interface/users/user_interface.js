@@ -53,11 +53,20 @@ const getArtistStudio= async (id)=> userImple.getArtistStudio(id);
  */
 const getArtistAlbum= async (id, album_id)=> userImple.getArtistAlbum(id, album_id);
 
+/**
+ * Search for the songs or artists
+ * @param {string} query - the text the user used to search for songs or artists
+ * 
+ * @returns 
+ */
+const search = async (query)=> userImple.search(query);
+
 module.exports={
     addToFav,
     findById,
     like,
     dislike,
     getArtistStudio,
-    getArtistAlbum
+    getArtistAlbum,
+    search
 }

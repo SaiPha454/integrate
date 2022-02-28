@@ -10,6 +10,8 @@ const artistCollection = mongoClient.db('integrate').collection('artists');
 
 
 const REDIS_CAHCE_EXP_SEC = 60;
+const SONG_SEARCH_LIMIT = 15;
+const ARTIST_SEARCH_LIMIT = 8;
 /**
  * Add a song the user's specified playlist or default playlist `fav`
  * @param {ObjectId} id - song id 
@@ -143,6 +145,30 @@ const getArtistAlbum = async (id, album_id)=>{
     return album;
 }
 
+/**
+ * Search for the songs or artists
+ * @param {string} query - the text the user used to search for songs or artists
+ * 
+ * @returns 
+ */
+const search= async (query)=>{
+    queryPattern = new RegExp(`${query}`,'im');
+    
+    let songs = await songCollection.find({
+        'title':{'$regex':queryPattern}
+    }).limit(SONG_SEARCH_LIMIT)
+    songs = await songs.toArray();
+    
+    let artists = await artistCollection.find({
+        'name':{'$regex':queryPattern}
+    },{projection:{'recent_released_songs':0,albums:0}}).limit(ARTIST_SEARCH_LIMIT)
+    artists = await artists.toArray();
+
+    return {
+        songs,
+        artists
+    };
+}
 
 module.exports={
     addToFav,
@@ -150,5 +176,6 @@ module.exports={
     like,
     dislike,
     getArtistStudio,
-    getArtistAlbum
+    getArtistAlbum,
+    search
 }
