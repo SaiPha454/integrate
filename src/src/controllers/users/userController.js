@@ -82,8 +82,27 @@ const dislikeSong= async (req,res)=>{
 
     return res.send(commonResponse(200,'Dislike successfully'));
 }
+
+/**
+ * Get the artist studio or profile contents . If cached in redis , retrive from redis and if not, from MongoDB and cache it.
+ * @param {ObjectId} id - artist -id
+ * 
+ * @returns 
+ */
+const getArtistStudio= async (req,res)=>{
+    let id = req.params.id;
+    let artistStudio = await user_interface.getArtistStudio(id);
+    
+    let meta={
+        id
+    }
+    return res.send(commonResponse(200,'Loaded successfully',meta,artistStudio))
+}
+
+
 module.exports={
     addToFav,
     likeSong,
-    dislikeSong
+    dislikeSong,
+    getArtistStudio
 }

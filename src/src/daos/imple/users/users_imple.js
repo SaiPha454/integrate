@@ -6,7 +6,10 @@ const redisKeys = require('../redis-keys/redis-keys-gen')
 
 const userCollection = mongoClient.db('integrate').collection('users');
 const songCollection = mongoClient.db('integrate').collection('songs');
+const artistCollection = mongoClient.db('integrate').collection('artists');
 
+
+const REDIS_CAHCE_EXP_SEC = 60;
 /**
  * Add a song the user's specified playlist or default playlist `fav`
  * @param {ObjectId} id - song id 
@@ -86,9 +89,36 @@ const like = async (id,user_id)=>{
     return await redisClient.srem(redis_key,user_id);
 }
 
+/**
+ * Get the artist studio or profile contents . If cached in redis , retrive from redis and if not, from MongoDB and cache it.
+ * @param {ObjectId} id - artist -id
+ * 
+ * @returns 
+ */
+const getArtistStudio= async (id)=>{
+
+    let redis_key = redisKeys.redis_get_artist_studio_key(id);
+
+    let artistStudio = await redisClient.get(redis_key);
+    
+    if(artistStudio != null){
+        
+        return JSON.parse(artistStudio);
+    }
+    
+    id = mongodb.ObjectId(id);
+
+    artistStudio = await artistCollection.findOne({'_id':id});
+
+    let redisSetArtistStudio = await redisClient.setex(redis_key,REDIS_CAHCE_EXP_SEC,JSON.stringify(artistStudio));
+
+    return artistStudio;
+}
+
 module.exports={
     addToFav,
     findById,
     like,
-    dislike
+    dislike,
+    getArtistStudio
 }

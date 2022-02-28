@@ -5,6 +5,7 @@ const router = express.Router();
 
 router.post('/song/add-to-fav',userController.addToFav);
 router.post('/song/like',userController.likeSong);
-router.post('/song/dislike',userController.dislikeSong)
+router.post('/song/dislike',userController.dislikeSong);
+router.get('/artists/:id/studio',userController.getArtistStudio);
 
 module.exports= router;

@@ -148,7 +148,7 @@
         }
      ```
 
-## Route - /artist/id/studio
+## Route - /artists/id/studio
 + ### Description
   - get the artist's  studio conents
 + ### Method - Get

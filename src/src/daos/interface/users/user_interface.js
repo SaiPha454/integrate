@@ -36,10 +36,18 @@ const like= async (id, user_id)=> userImple.like(id, user_id);
  */
  const dislike= async (id, user_id)=> userImple.dislike(id, user_id);
 
- 
+/**
+ * Get the artist studio or profile contents . If cached in redis , retrive from redis and if not, from MongoDB and cache it.
+ * @param {ObjectId} id - artist -id
+ * 
+ * @returns 
+ */
+const getArtistStudio= async (id)=> userImple.getArtistStudio(id); 
+
 module.exports={
     addToFav,
     findById,
     like,
-    dislike
+    dislike,
+    getArtistStudio
 }
