@@ -6,9 +6,6 @@
 + ### Method - Post
 + ### Params
   -  id - artist id (required)
-  - name - artist name (required)
-  - email - artist email (required)
-  - password - artist hashed password (required)
 
 + ### Return
     <br/>
@@ -24,7 +21,8 @@
             _id:  123456,
             artist_name: "artist name",
             email:  "artist email",
-            status: "active"
+            status: "active",
+            registered: true
         }
     }
     ```
@@ -125,8 +123,7 @@
         meta:{
             total: 10000
         },
-        data:{
-            artists:[
+        data:[
                 {
                     _id:  123456,
                     artist_name: "artist name",
@@ -141,7 +138,7 @@
                 },
                 ...
             ]
-        }
+        
     }
     ```
 + ### Error
