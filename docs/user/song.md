@@ -216,13 +216,13 @@
         }
      ```
 
-## Route - /artist/id/album/album-id
+## Route - /artists/id/albums/album-id
 + ### Description
   - get the artist's  studio conents of an album
 + ### Method - Get
 + ### Params
   - id - artist id (required)
-  - album-id - album id (required)
+  - album_id - album id (required)
 
 + ### Return
     <br/>
@@ -232,11 +232,11 @@
         status: 200,
         message: "success",
         meta:{
-          id: 123456 //artist id
-          album_id: 123 //album id
+          id: 123456, //artist id
+          album_id: 123, //album id
+          total: 10
         },
-        data:{
-          songs:[
+        data:[
 
               {
                 _id:    ObjectID(),
@@ -255,7 +255,7 @@
             },
             ...
           ]
-        }
+        
     }
     ```
 + ### Error

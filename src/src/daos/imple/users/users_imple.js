@@ -115,10 +115,40 @@ const getArtistStudio= async (id)=>{
     return artistStudio;
 }
 
+/**
+ * Get the album contents of the artist
+ * @param {ObjectId} id - artist id
+ * @param {ObjectId} album_id - album id
+ * 
+ * @returns
+ */
+const getArtistAlbum = async (id, album_id)=>{
+    let redis_key = redisKeys.redis_get_artist_album_contents_key(id, album_id);
+
+    let album = await redisClient.get(redis_key);
+    
+    if(album != null){
+        
+        return JSON.parse(album);
+    }
+
+    id = mongodb.ObjectId(id);
+    album_id= album_id === 'studio' ? 'studio' : mongodb.ObjectId(album_id);
+
+    album = await songCollection.find({'artist._id':id,'album._id':album_id});
+    album = await album.toArray();
+
+    let redisSetAlbum = await redisClient.setex(redis_key,REDIS_CAHCE_EXP_SEC,JSON.stringify(album));
+
+    return album;
+}
+
+
 module.exports={
     addToFav,
     findById,
     like,
     dislike,
-    getArtistStudio
+    getArtistStudio,
+    getArtistAlbum
 }

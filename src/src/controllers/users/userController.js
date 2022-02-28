@@ -99,10 +99,33 @@ const getArtistStudio= async (req,res)=>{
     return res.send(commonResponse(200,'Loaded successfully',meta,artistStudio))
 }
 
+/**
+ * Get the album contents of the artist
+ * @param {ObjectId} id - artist id
+ * @param {ObjectId} album_id - album id
+ * 
+ * @returns
+ */
+const getArtistAlbum= async (req,res)=>{
+        let id = req.params.id;
+        let album_id = req.params.album_id ? req.params.album_id : 'studio';
+
+        album = await user_interface.getArtistAlbum(id, album_id);
+
+        let meta={
+            id,
+            album_id,
+            total: album.length
+        }
+
+        return res.send(commonResponse(200,'Loaded successfully',meta,album));
+}
+
 
 module.exports={
     addToFav,
     likeSong,
     dislikeSong,
-    getArtistStudio
+    getArtistStudio,
+    getArtistAlbum
 }

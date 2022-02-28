@@ -44,10 +44,20 @@ const like= async (id, user_id)=> userImple.like(id, user_id);
  */
 const getArtistStudio= async (id)=> userImple.getArtistStudio(id); 
 
+/**
+ * Get the album contents of the artist
+ * @param {ObjectId} id - artist id
+ * @param {ObjectId} album_id - album id
+ * 
+ * @returns
+ */
+const getArtistAlbum= async (id, album_id)=> userImple.getArtistAlbum(id, album_id);
+
 module.exports={
     addToFav,
     findById,
     like,
     dislike,
-    getArtistStudio
+    getArtistStudio,
+    getArtistAlbum
 }

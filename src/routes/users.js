@@ -7,5 +7,6 @@ router.post('/song/add-to-fav',userController.addToFav);
 router.post('/song/like',userController.likeSong);
 router.post('/song/dislike',userController.dislikeSong);
 router.get('/artists/:id/studio',userController.getArtistStudio);
+router.get('/artists/:id/albums/:album_id',userController.getArtistAlbum);
 
 module.exports= router;
