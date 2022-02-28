@@ -1,13 +1,13 @@
 # Song endpoints (user)
 
-## Route - /song/add-to-fav
+## Route - /users/song/add-to-fav
 + ### Description
   - add a song to my favourite playlist
 + ### Method - Post
 + ### Params
   - id - song id (required)
   - user_id - user id (required)
-  - playlist_id - playlist id (required, "fav" is defualt)
+  - playlist_id - playlist id (option, "fav" is defualt)
   
 
 + ### Return
@@ -18,9 +18,7 @@
         status: 200,
         message: "added to playlist successfully",
         meta:{
-          id: ObjectID(),
-          playlist_id: ObjectID(),
-          playlist_name: "playlist name"
+          id: ObjectID()
         },
         data:{
             
@@ -150,7 +148,7 @@
         }
      ```
 
-## Route - /artist/id/studio
+## Route - /artists/id/studio
 + ### Description
   - get the artist's  studio conents
 + ### Method - Get
@@ -218,13 +216,13 @@
         }
      ```
 
-## Route - /artist/id/album/album-id
+## Route - /artists/id/albums/album-id
 + ### Description
   - get the artist's  studio conents of an album
 + ### Method - Get
 + ### Params
   - id - artist id (required)
-  - album-id - album id (required)
+  - album_id - album id (required)
 
 + ### Return
     <br/>
@@ -234,11 +232,11 @@
         status: 200,
         message: "success",
         meta:{
-          id: 123456 //artist id
-          album_id: 123 //album id
+          id: 123456, //artist id
+          album_id: 123, //album id
+          total: 10
         },
-        data:{
-          songs:[
+        data:[
 
               {
                 _id:    ObjectID(),
@@ -257,7 +255,7 @@
             },
             ...
           ]
-        }
+        
     }
     ```
 + ### Error
@@ -285,7 +283,7 @@
         status: 200,
         message: "success",
         meta:{
-          query: "query words"
+          total: 30
         },
         data:{
            artists:[
@@ -331,7 +329,7 @@
 ## Route - /search/suggest?query=example
 + ### Description
   - real time search suggestion for songs or artists
-+ ### Method - Get
++ ### Method - POST
 + ### Params
   - query - search query text (required)
 
@@ -342,16 +340,13 @@
     {
         status: 200,
         message: "success",
-        meta:{
-          query: "query words"
-        },
-        data:{
-          suggestions:[
+        meta:{},
+        data:[
             "cherry sky",
             "taylor",
             ...
           ]
-        }
+        
     }
     ```
 + ### Error
