@@ -61,6 +61,14 @@ const getArtistAlbum= async (id, album_id)=> userImple.getArtistAlbum(id, album_
  */
 const search = async (query)=> userImple.search(query);
 
+/**
+ * Return the suitable search suggestion texts.
+ * @param {string} query - the text searched for
+ * 
+ * @returns []
+ */
+const searchSuggest = async (query)=> userImple.searchSuggest(query);
+
 module.exports={
     addToFav,
     findById,
@@ -68,5 +76,6 @@ module.exports={
     dislike,
     getArtistStudio,
     getArtistAlbum,
-    search
+    search,
+    searchSuggest
 }

@@ -329,7 +329,7 @@
 ## Route - /search/suggest?query=example
 + ### Description
   - real time search suggestion for songs or artists
-+ ### Method - Get
++ ### Method - POST
 + ### Params
   - query - search query text (required)
 
@@ -340,16 +340,13 @@
     {
         status: 200,
         message: "success",
-        meta:{
-          query: "query words"
-        },
-        data:{
-          suggestions:[
+        meta:{},
+        data:[
             "cherry sky",
             "taylor",
             ...
           ]
-        }
+        
     }
     ```
 + ### Error

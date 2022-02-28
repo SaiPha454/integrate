@@ -134,8 +134,23 @@ const search = async (req,res)=>{
     let meta={
         total : result.songs.length + result.artists.length
     }
-    
+
     return res.send(commonResponse(200,'search completed',meta,result));
+}
+
+/**
+ * Return the suitable search suggestion texts.
+ * @param {string} query - the text searched for
+ * 
+ * @returns []
+ */
+const searchSuggest= async (req,res)=>{
+
+    let query = req.query.query;
+
+    let result = await user_interface.searchSuggest(query);
+
+    return res.send(commonResponse(200,'success',{},result));
 }
 
 module.exports={
@@ -144,5 +159,6 @@ module.exports={
     dislikeSong,
     getArtistStudio,
     getArtistAlbum,
-    search
+    search,
+    searchSuggest
 }

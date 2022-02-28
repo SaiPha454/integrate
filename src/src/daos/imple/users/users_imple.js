@@ -2,7 +2,8 @@ const mongoClient = require('../clients/mongodb_client');
 const mongodb = require('mongodb');
 const redisClient = require('../clients/redis_client');
 
-const redisKeys = require('../redis-keys/redis-keys-gen')
+const redisKeys = require('../redis-keys/redis-keys-gen');
+const { redis_array_mapper } = require('../helper/redis_arr_map');
 
 const userCollection = mongoClient.db('integrate').collection('users');
 const songCollection = mongoClient.db('integrate').collection('songs');
@@ -10,8 +11,12 @@ const artistCollection = mongoClient.db('integrate').collection('artists');
 
 
 const REDIS_CAHCE_EXP_SEC = 60;
+
 const SONG_SEARCH_LIMIT = 15;
 const ARTIST_SEARCH_LIMIT = 8;
+
+const REDIS_SEARCH_SUGGEST_KEY = 'search:suggest';
+const REDIS_SEARCH_SUGGEST_COUNT = 15;
 /**
  * Add a song the user's specified playlist or default playlist `fav`
  * @param {ObjectId} id - song id 
@@ -170,6 +175,25 @@ const search= async (query)=>{
     };
 }
 
+/**
+ * Return the suitable search suggestion texts.
+ * @param {string} query - the text searched for
+ * 
+ * @returns []
+ */
+const searchSuggest= async (query)=>{
+
+    query = query.trim()
+    
+    let result = await redisClient.zscan(REDIS_SEARCH_SUGGEST_KEY,0,"match",`${query}*`,"count",REDIS_SEARCH_SUGGEST_COUNT);
+
+    
+    result = redis_array_mapper(result[1]);
+
+    return result;
+
+}
+
 module.exports={
     addToFav,
     findById,
@@ -177,5 +201,6 @@ module.exports={
     dislike,
     getArtistStudio,
     getArtistAlbum,
-    search
+    search,
+    searchSuggest
 }
