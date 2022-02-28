@@ -3,7 +3,12 @@ const {commonErrorResponse, commonResponse}= require('../commonController/common
 const { insert, findById, activate, burn, findAll } = require("../../daos/interface/admin/admin_artists_interface")
 
 
-//confirm the artist's account registeration request
+/**
+ * Confirm the artist account registeration request
+ * @param {ObjectId} id - artist id 
+ * 
+ * @returns
+ */
 const register= async (req,res) =>{
     let id= req.body.id;
 
@@ -22,7 +27,12 @@ const register= async (req,res) =>{
     
 }
 
-//activate the artist account
+/**
+ * Activate the artist account
+ * @param {ObjectId} id - artist id
+ * 
+ * @returns 
+ */
 const activateArtistAccount= async (req,res)=>{
 
     let id= req.body.id;
@@ -41,7 +51,12 @@ const activateArtistAccount= async (req,res)=>{
     return res.send(commonResponse(200,'Activated successfully',meta,artist));
 }
 
-//burn the artist account
+/**
+ * Burn the artist account
+ * @param {ObjectId} id - artist id
+ * 
+ * @returns 
+ */
 const burnArtistAccount= async (req,res)=>{
     let id= req.body.id;
 
@@ -61,7 +76,11 @@ const burnArtistAccount= async (req,res)=>{
 
 }
 
-//get the list of all artists
+/**
+ * Get the list of all artists
+ * 
+ * @returns
+ */
 const getArtistList= async (req,res)=>{
     
     let artists= await findAll();
