@@ -59,7 +59,7 @@ const createAlbum=async (req,res)=>{
  * 
  */
 const updateAlbum= async (req,res)=>{
-    let album_id = mongodb.ObjectId(req.body.id);
+    let album_id = req.body.id === 'studio' ? 'studio' : mongodb.ObjectId(req.body.id);
     let artist_id = mongodb.ObjectId(req.body.artist_id);
     let new_name = req.body.name;
 
@@ -105,7 +105,7 @@ const updateAlbum= async (req,res)=>{
  * @param {ObjectId} artist_id - artist id
  */
 const deleteAlbum=async (req,res)=>{
-    let album_id = mongodb.ObjectId(req.body.id);
+    let album_id = req.body.id === 'studio' ? 'studio' : mongodb.ObjectId(req.body.id);
     let artist_id = mongodb.ObjectId(req.body.artist_id);
 
     let identifier={'_id':artist_id};
