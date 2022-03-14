@@ -6,6 +6,8 @@ const fs = require('fs');
 //get the current folder address path
 let dirname = __dirname .replace("\\","/");
 
+let dbIndex = process.env.NODE_ENV === 'production' ? 1 : 0;
+
 // create new redis client connection
 const redis = new Redis({
     sentinels:[
@@ -29,7 +31,8 @@ const redis = new Redis({
         rejectUnauthorized: false
     },
     username: process.env.redis_username,
-    password: process.env.redis_password
+    password: process.env.redis_password,
+    db: dbIndex
 });
 
 
