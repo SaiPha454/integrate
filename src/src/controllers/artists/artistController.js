@@ -2,11 +2,12 @@ const mongodb = require('mongodb')
 const mongoClient = require('../../daos/imple/clients/mongodb_client');
 const { commonResponse, commonErrorResponse } = require('../commonController/commonController');
 
+let dbName = process.env.NODE_ENV === 'production' ? 'integrate' : 'test';
 /*
   create collections on Moongodb server if not exists and return the conneciton
 */
-const artistCollection = mongoClient.db('integrate').collection('artists');
-const songCollection = mongoClient.db('integrate').collection('songs'); 
+const artistCollection = mongoClient.db(dbName).collection('artists');
+const songCollection = mongoClient.db(dbName).collection('songs'); 
 
 /** Create an album of the specified artist
 @param {string} name - album name (req)

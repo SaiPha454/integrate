@@ -2,7 +2,8 @@
 const mongodb= require('mongodb')
 const mongoClient= require('../clients/mongodb_client')
 
-let artistListCollection= mongoClient.db('integrate').collection('artist-list');
+let dbName = process.env.NODE_ENV === 'production' ? 'integrate' : 'test';
+let artistListCollection= mongoClient.db(dbName).collection('artist-list');
 /**
  * Confirm the artist account registeration request
  * @param {ObjectId} id - artist id 

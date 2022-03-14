@@ -5,9 +5,11 @@ const redisClient = require('../clients/redis_client');
 const redisKeys = require('../redis-keys/redis-keys-gen');
 const { redis_array_mapper } = require('../helper/redis_arr_map');
 
-const userCollection = mongoClient.db('integrate').collection('users');
-const songCollection = mongoClient.db('integrate').collection('songs');
-const artistCollection = mongoClient.db('integrate').collection('artists');
+let dbName = process.env.NODE_ENV === 'production' ? 'integrate' : 'test';
+
+const userCollection = mongoClient.db(dbName).collection('users');
+const songCollection = mongoClient.db(dbName).collection('songs');
+const artistCollection = mongoClient.db(dbName).collection('artists');
 
 
 const REDIS_CAHCE_EXP_SEC = 60;
