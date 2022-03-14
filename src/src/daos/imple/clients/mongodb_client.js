@@ -10,11 +10,15 @@ const client = new MongoClient(uri,{
 });
 
 
-client.connect();
-//Detect if the connection is initiate everytime.
-console.log('Initiate Mongo Connection!');
+
 
 async function checkConnection(){
+
+    await client.connect();
+    //Detect if the connection is initiate everytime.
+    console.log('Initiate Mongo Connection!');
+
+
     let con =await client.db('admin').command({ping:1});
     
     if(con.ok == 1){
